@@ -84,6 +84,9 @@ csrc/
 examples/
   biocuda_quickstart.py
 
+notebooks/
+  BioCUDA_v39_12_Triton_Benchmark.ipynb
+
 tests/
   test_formula_engine.py
   test_cuda_extension.py
@@ -651,6 +654,14 @@ Example script:
 ```bash
 python examples/biocuda_quickstart.py
 ```
+
+Benchmark notebook:
+
+```bash
+jupyter notebook notebooks/BioCUDA_v39_12_Triton_Benchmark.ipynb
+```
+
+The notebook is the original BioCUDA v39.12 Triton integration benchmark artifact. It contains the executed Tesla T4 run used for the tables above, including Hamming, Smith-Waterman, matmul variants, EXP3 winner selection, ECC checks, jitter summaries, and the final JSON report.
 
 ---
 

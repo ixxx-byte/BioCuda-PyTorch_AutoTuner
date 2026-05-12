@@ -1,6 +1,6 @@
 import math
 
-from biocuda_autotune import BioCUDAAutoTune, GPU_DB, coverage_report
+from biocuda_autotune import BioCUDAAutoTune, GPU_DB, KERNEL_SPECS, coverage_report, kernel_modules_count, notebook_summary
 
 
 def test_formula_summary_is_available():
@@ -40,3 +40,17 @@ def test_gpu_database_matches_notebook_coverage():
         "H100_SXM5",
         "H100_PCIE",
     }
+
+
+def test_kernel_specs_match_notebook_modules():
+    assert set(KERNEL_SPECS) == set(GPU_DB)
+    assert kernel_modules_count() == 10
+    assert KERNEL_SPECS["T4"].mma_shape == (16, 8, 8)
+    assert KERNEL_SPECS["H100_SXM5"].has_dpx is True
+
+
+def test_notebook_summary_artifact_is_exposed():
+    summary = notebook_summary()
+    assert summary["version"] == "39.12.0-triton"
+    assert summary["kernel_modules_count"] == 10
+    assert summary["falsification_t0_n_c"]["pass_rate"] == 1.0

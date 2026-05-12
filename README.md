@@ -76,6 +76,10 @@ biocuda_autotune/
   ops.py               PyTorch/Triton operations and benchmark helpers
   extension.py         compiled CUDA extension loader
   coverage.py          explicit G1-G35 implementation map
+  kernel_specs.py      notebook-parity metadata for 10 per-GPU modules
+  calibration.py       TC calibration helpers and optional CuPy/NVRTC compiler
+  falsification.py     T0/N/C and Tier-M result structures/helpers
+  benchmark_artifacts.py static Tesla T4 notebook benchmark summary
 
 csrc/
   biocuda_ext.cpp      pybind11 / torch extension bindings
@@ -251,6 +255,17 @@ coverage = coverage_report()
 | G35 | Python formula | Tensor-core partial-tile efficiency. |
 
 This split is intentional. It keeps the project honest: formulas requiring hardware counters are not silently replaced with invented constants.
+
+### Notebook-Parity Modules
+
+The restored notebook had several research-only cells that are now represented as import-safe package modules:
+
+| Notebook Cell | Package Module | What Was Preserved |
+|---|---|---|
+| Cell 4 | `kernel_specs.py` | Ten per-GPU kernel module records, MMA shape, TC generation, DPX flag, build options. |
+| Cell 5 | `calibration.py` | Tensor-core calibration math, cycle-sample summarization, optional CuPy/NVRTC compiler hook. |
+| Cell 8/9 | `falsification.py` | `FalsifyResult`, `TierMResult`, Kendall tau, Hill R2, EXP3 regret bound helpers. |
+| Cell 14 | `benchmark_artifacts.py` | Static Tesla T4 notebook summary, bio-kernel benchmark rows, matmul headline rows. |
 
 ---
 

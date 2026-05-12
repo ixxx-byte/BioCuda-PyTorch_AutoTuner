@@ -2,7 +2,7 @@
 
 from .autotune import BioCUDAAutoTune, BioCUDAOptimizer, quick_optimize
 from .coverage import FORMULA_COVERAGE, coverage_report
-from .core import FormulaEngine, GPUSpec, detect_gpu_spec
+from .core import FormulaEngine, GPU_DB, GPUSpec, detect_gpu_spec
 from .extension import affine_scan32, hamming_popc, is_available, reverse32, smith_waterman_score, xor_permute
 from .ops import benchmark_matmul, matmul
 
@@ -12,6 +12,7 @@ __all__ = [
     "BioCUDAAutoTune",
     "BioCUDAOptimizer",
     "FormulaEngine",
+    "GPU_DB",
     "GPUSpec",
     "benchmark_matmul",
     "coverage_report",

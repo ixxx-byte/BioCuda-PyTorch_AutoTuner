@@ -1,6 +1,6 @@
 import math
 
-from biocuda_autotune import BioCUDAAutoTune, coverage_report
+from biocuda_autotune import BioCUDAAutoTune, GPU_DB, coverage_report
 
 
 def test_formula_summary_is_available():
@@ -25,3 +25,18 @@ def test_coverage_map_has_all_g_formulas():
     assert len(cov) == 35
     for i in range(1, 36):
         assert f"G{i}" in cov
+
+
+def test_gpu_database_matches_notebook_coverage():
+    assert set(GPU_DB) == {
+        "V100",
+        "T4",
+        "A100",
+        "A10",
+        "RTX3090",
+        "L4",
+        "L40",
+        "RTX4090",
+        "H100_SXM5",
+        "H100_PCIE",
+    }

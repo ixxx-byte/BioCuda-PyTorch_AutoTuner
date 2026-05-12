@@ -27,6 +27,10 @@ class GPUSpec:
     hbm_bw: float
     boost_ghz: float
     tdp_w: int
+    fp32_per_sm: int = 64
+    has_dpx: bool = False
+    has_tma: bool = False
+    fp16_tc_tflops: float = 0.0
     tau_shfl: int = 4
     tau_smem: int = 23
     tau_l2: int = 193
@@ -42,11 +46,86 @@ class GPUSpec:
 
 
 GPU_DB = {
-    "T4": GPUSpec("T4", "Tesla T4", "turing", "sm_75", (7, 5), 40, 8, 65536, 4 * 1024**2, 320e9, 1.59, 70, tau_smem=28, tau_l2=220, tau_hbm=650),
-    "V100": GPUSpec("V100", "Tesla V100", "volta", "sm_70", (7, 0), 80, 8, 98304, 6 * 1024**2, 900e9, 1.53, 300, tau_smem=28, tau_l2=230, tau_hbm=670),
-    "A100": GPUSpec("A100", "A100", "ampere", "sm_80", (8, 0), 108, 4, 167936, 40 * 1024**2, 2039e9, 1.41, 400, tau_smem=23, tau_l2=200, tau_hbm=620),
-    "RTX4090": GPUSpec("RTX4090", "GeForce RTX 4090", "ada", "sm_89", (8, 9), 128, 4, 102400, 72 * 1024**2, 1008e9, 2.52, 450, tau_smem=24, tau_l2=195, tau_hbm=610, tau_tc=14),
-    "H100": GPUSpec("H100", "H100", "hopper", "sm_90a", (9, 0), 132, 4, 233472, 50 * 1024**2, 3350e9, 1.83, 700, tau_smem=23, tau_l2=193, tau_hbm=600),
+    "V100": GPUSpec(
+        key="V100", name="Tesla V100 SXM2", arch="volta", sm_arch="sm_70", cc=(7, 0),
+        n_sm=80, fp32_per_sm=64, tc_per_sm=8, smem_per_sm=98304,
+        l2_bytes=6 * 1024**2, hbm_bw=900e9, boost_ghz=1.53,
+        has_dpx=False, has_tma=False, tdp_w=300,
+        tau_shfl=4, tau_smem=28, tau_l2=230, tau_hbm=670,
+        tau_tc=16, tau_dpx=2, fp16_tc_tflops=125.0,
+    ),
+    "T4": GPUSpec(
+        key="T4", name="Tesla T4", arch="turing", sm_arch="sm_75", cc=(7, 5),
+        n_sm=40, fp32_per_sm=64, tc_per_sm=8, smem_per_sm=65536,
+        l2_bytes=4 * 1024**2, hbm_bw=320e9, boost_ghz=1.59,
+        has_dpx=False, has_tma=False, tdp_w=70,
+        tau_shfl=4, tau_smem=28, tau_l2=220, tau_hbm=650,
+        tau_tc=16, tau_dpx=2, fp16_tc_tflops=65.0,
+    ),
+    "A100": GPUSpec(
+        key="A100", name="A100 SXM4 80GB", arch="ampere", sm_arch="sm_80", cc=(8, 0),
+        n_sm=108, fp32_per_sm=64, tc_per_sm=4, smem_per_sm=167936,
+        l2_bytes=40 * 1024**2, hbm_bw=2039e9, boost_ghz=1.41,
+        has_dpx=False, has_tma=False, tdp_w=400,
+        tau_shfl=4, tau_smem=23, tau_l2=200, tau_hbm=620,
+        tau_tc=16, tau_dpx=2, fp16_tc_tflops=312.0,
+    ),
+    "A10": GPUSpec(
+        key="A10", name="A10", arch="ampere", sm_arch="sm_86", cc=(8, 6),
+        n_sm=72, fp32_per_sm=128, tc_per_sm=4, smem_per_sm=102400,
+        l2_bytes=6 * 1024**2, hbm_bw=600e9, boost_ghz=1.70,
+        has_dpx=False, has_tma=False, tdp_w=150,
+        tau_shfl=4, tau_smem=26, tau_l2=210, tau_hbm=630,
+        tau_tc=16, tau_dpx=2, fp16_tc_tflops=125.0,
+    ),
+    "RTX3090": GPUSpec(
+        key="RTX3090", name="GeForce RTX 3090", arch="ampere", sm_arch="sm_86", cc=(8, 6),
+        n_sm=82, fp32_per_sm=128, tc_per_sm=4, smem_per_sm=102400,
+        l2_bytes=6 * 1024**2, hbm_bw=936e9, boost_ghz=1.70,
+        has_dpx=False, has_tma=False, tdp_w=350,
+        tau_shfl=4, tau_smem=26, tau_l2=210, tau_hbm=630,
+        tau_tc=16, tau_dpx=2, fp16_tc_tflops=142.0,
+    ),
+    "L4": GPUSpec(
+        key="L4", name="L4", arch="ada", sm_arch="sm_89", cc=(8, 9),
+        n_sm=60, fp32_per_sm=128, tc_per_sm=4, smem_per_sm=102400,
+        l2_bytes=48 * 1024**2, hbm_bw=300e9, boost_ghz=2.04,
+        has_dpx=False, has_tma=False, tdp_w=72,
+        tau_shfl=4, tau_smem=24, tau_l2=195, tau_hbm=610,
+        tau_tc=14, tau_dpx=2, fp16_tc_tflops=121.0,
+    ),
+    "L40": GPUSpec(
+        key="L40", name="L40", arch="ada", sm_arch="sm_89", cc=(8, 9),
+        n_sm=142, fp32_per_sm=128, tc_per_sm=4, smem_per_sm=102400,
+        l2_bytes=96 * 1024**2, hbm_bw=864e9, boost_ghz=2.49,
+        has_dpx=False, has_tma=False, tdp_w=300,
+        tau_shfl=4, tau_smem=24, tau_l2=195, tau_hbm=610,
+        tau_tc=14, tau_dpx=2, fp16_tc_tflops=181.0,
+    ),
+    "RTX4090": GPUSpec(
+        key="RTX4090", name="GeForce RTX 4090", arch="ada", sm_arch="sm_89", cc=(8, 9),
+        n_sm=128, fp32_per_sm=128, tc_per_sm=4, smem_per_sm=102400,
+        l2_bytes=72 * 1024**2, hbm_bw=1008e9, boost_ghz=2.52,
+        has_dpx=False, has_tma=False, tdp_w=450,
+        tau_shfl=4, tau_smem=24, tau_l2=195, tau_hbm=610,
+        tau_tc=14, tau_dpx=2, fp16_tc_tflops=330.3,
+    ),
+    "H100_SXM5": GPUSpec(
+        key="H100_SXM5", name="H100 SXM5", arch="hopper", sm_arch="sm_90a", cc=(9, 0),
+        n_sm=132, fp32_per_sm=128, tc_per_sm=4, smem_per_sm=233472,
+        l2_bytes=50 * 1024**2, hbm_bw=3350e9, boost_ghz=1.83,
+        has_dpx=True, has_tma=True, tdp_w=700,
+        tau_shfl=4, tau_smem=23, tau_l2=193, tau_hbm=600,
+        tau_tc=16, tau_dpx=2, fp16_tc_tflops=989.0,
+    ),
+    "H100_PCIE": GPUSpec(
+        key="H100_PCIE", name="H100 PCIe", arch="hopper", sm_arch="sm_90a", cc=(9, 0),
+        n_sm=114, fp32_per_sm=128, tc_per_sm=4, smem_per_sm=233472,
+        l2_bytes=50 * 1024**2, hbm_bw=2000e9, boost_ghz=1.62,
+        has_dpx=True, has_tma=True, tdp_w=350,
+        tau_shfl=4, tau_smem=23, tau_l2=193, tau_hbm=600,
+        tau_tc=16, tau_dpx=2, fp16_tc_tflops=756.0,
+    ),
 }
 
 

@@ -256,7 +256,24 @@ This split is intentional. It keeps the project honest: formulas requiring hardw
 
 ## Hardware Foundation
 
-The reference v38 constants are for H100 SXM5 / `sm_90`, but the package also contains specs for T4, V100, A100, RTX 4090, and generic CUDA fallback.
+The reference v38 constants are for H100 SXM5 / `sm_90`, but the package now mirrors the original notebook GPU database with **10 hardware profiles** plus a generic CUDA fallback.
+
+### Supported GPU Profiles
+
+| Key | GPU | Arch | SM | FP16 TC Reference |
+|---|---|---|---|---:|
+| `V100` | Tesla V100 SXM2 | Volta | `sm_70` | 125.0 TFLOPS |
+| `T4` | Tesla T4 | Turing | `sm_75` | 65.0 TFLOPS |
+| `A100` | A100 SXM4 80GB | Ampere | `sm_80` | 312.0 TFLOPS |
+| `A10` | A10 | Ampere | `sm_86` | 125.0 TFLOPS |
+| `RTX3090` | GeForce RTX 3090 | Ampere | `sm_86` | 142.0 TFLOPS |
+| `L4` | L4 | Ada | `sm_89` | 121.0 TFLOPS |
+| `L40` | L40 | Ada | `sm_89` | 181.0 TFLOPS |
+| `RTX4090` | GeForce RTX 4090 | Ada | `sm_89` | 330.3 TFLOPS |
+| `H100_SXM5` | H100 SXM5 | Hopper | `sm_90a` | 989.0 TFLOPS |
+| `H100_PCIE` | H100 PCIe | Hopper | `sm_90a` | 756.0 TFLOPS |
+
+Each profile carries SM count, Tensor Core count per SM, shared memory size, L2 size, HBM bandwidth, boost clock, TDP, DPX/TMA capability flags, and the latency constants used by the formula engine.
 
 ### H100 Reference Constants
 
